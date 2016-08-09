@@ -23,13 +23,8 @@ public class DialogAndroid extends ReactContextBaseJavaModule {
         return "DialogAndroid";
     }
 
-    Activity mActivity;
-
-    public DialogAndroid(
-            ReactApplicationContext reactContext,
-            Activity activity) {
+    public DialogAndroid(ReactApplicationContext reactContext) {
         super(reactContext);
-        mActivity = activity;
     }
 
     /* Apply the options to the provided builder */
@@ -38,7 +33,7 @@ public class DialogAndroid extends ReactContextBaseJavaModule {
             ReadableMap options
     ) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         ReadableMapKeySetIterator iterator = options.keySetIterator();
-        while(iterator.hasNextKey()) {
+        while (iterator.hasNextKey()) {
             String key = iterator.nextKey();
 
             switch (key) {
@@ -118,7 +113,11 @@ public class DialogAndroid extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void show(ReadableMap options, final Callback callback) {
-        mBuilder = new MaterialDialog.Builder(mActivity);
+        final Activity currentActivity = getCurrentActivity();
+        if (currentActivity == null) {
+            return;
+        }
+        mBuilder = new MaterialDialog.Builder(currentActivity);
         try {
             applyOptions(mBuilder, options);
         } catch (Exception e) {
@@ -177,13 +176,13 @@ public class DialogAndroid extends ReactContextBaseJavaModule {
                     options.getInt("selectedIndex") : -1;
             mBuilder.itemsCallbackSingleChoice(selectedIndex,
                     new MaterialDialog.ListCallbackSingleChoice() {
-                @Override
-                public boolean onSelection(MaterialDialog materialDialog, View view, int i,
-                                           CharSequence charSequence) {
-                    callback.invoke("itemsCallbackSingleChoice", i, charSequence.toString());
-                    return true;
-                }
-            });
+                        @Override
+                        public boolean onSelection(MaterialDialog materialDialog, View view, int i,
+                                                   CharSequence charSequence) {
+                            callback.invoke("itemsCallbackSingleChoice", i, charSequence.toString());
+                            return true;
+                        }
+                    });
         }
 
         if (options.hasKey("itemsCallbackMultiChoice")) {
@@ -199,23 +198,23 @@ public class DialogAndroid extends ReactContextBaseJavaModule {
 
             mBuilder.itemsCallbackMultiChoice(selectedIndices,
                     new MaterialDialog.ListCallbackMultiChoice() {
-                @Override
-                public boolean onSelection(MaterialDialog materialDialog,
-                                           Integer[] integers, CharSequence[] charSequences) {
+                        @Override
+                        public boolean onSelection(MaterialDialog materialDialog,
+                                                   Integer[] integers, CharSequence[] charSequences) {
 
-                    // Concatenate selected IDs into a string
-                    StringBuilder selected = new StringBuilder("");
-                    for (int i = 0; i < integers.length - 1; i++) {
-                        selected.append(integers[i]).append(",");
-                    }
-                    if (integers.length > 0) {
-                        selected.append(integers[integers.length - 1]);
-                    }
+                            // Concatenate selected IDs into a string
+                            StringBuilder selected = new StringBuilder("");
+                            for (int i = 0; i < integers.length - 1; i++) {
+                                selected.append(integers[i]).append(",");
+                            }
+                            if (integers.length > 0) {
+                                selected.append(integers[integers.length - 1]);
+                            }
 
-                    callback.invoke("itemsCallbackMultiChoice", selected.toString());
-                    return true;
-                }
-            });
+                            callback.invoke("itemsCallbackMultiChoice", selected.toString());
+                            return true;
+                        }
+                    });
 
             // Provide a 'Clear' button to unselect all choices
             if (options.hasKey("multiChoiceClearButton") &&
@@ -284,10 +283,10 @@ public class DialogAndroid extends ReactContextBaseJavaModule {
                 }
             });
         }
-        mActivity.runOnUiThread(new Runnable() {
+        currentActivity.runOnUiThread(new Runnable() {
             public void run() {
-                if(mDialog != null)
-                  mDialog.dismiss();
+                if (mDialog != null)
+                    mDialog.dismiss();
                 mDialog = mBuilder.build();
                 mDialog.show();
             }
@@ -296,8 +295,8 @@ public class DialogAndroid extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void dismiss() {
-      if(mDialog != null)
-        mDialog.dismiss();
+        if (mDialog != null)
+            mDialog.dismiss();
     }
 
 }

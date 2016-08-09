@@ -1,7 +1,5 @@
 package com.aakashns.reactnativedialogs;
 
-import android.app.Activity;
-
 import com.aakashns.reactnativedialogs.modules.DialogAndroid;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
@@ -13,17 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReactNativeDialogsPackage implements ReactPackage {
-    Activity mActivity;
-
-    public ReactNativeDialogsPackage(Activity activity) {
-        mActivity = activity;
+    public ReactNativeDialogsPackage() {
     }
 
     @Override
     public List<NativeModule> createNativeModules(
             ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new DialogAndroid(reactContext, mActivity));
+        modules.add(new DialogAndroid(reactContext));
         return modules;
     }
 
