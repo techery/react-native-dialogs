@@ -3,16 +3,22 @@
 # react-native-dialogs
 Material Design dialogs for React Native Android apps (wrapper over [afollestad/material-dialogs](https://github.com/afollestad/material-dialogs))
 
-<img src="https://pbs.twimg.com/media/CSww5lhUAAAE487.png" width="240">
-<img src="https://pbs.twimg.com/media/CSww5hBUYAA7Ijo.png" width="240">
-<img src="https://pbs.twimg.com/media/CSww5pMUcAEry95.png" width="227">
+<img src="https://pbs.twimg.com/media/CSww5lhUAAAE487.png" width="240" hspace="10"><img src="https://pbs.twimg.com/media/CSww5hBUYAA7Ijo.png" width="240" hspace="10"><img src="https://pbs.twimg.com/media/CSww5pMUcAEry95.png" width="227">
 
 
 Installation
 ------------
-###Installation using RNPM
+### Installation using RNPM
 
-```rnpm install react-native-dialogs```
+1 . `yarn add react-native-dialogs`
+
+or
+
+`npm i react-native-dialogs --save`
+
+
+
+2 . `react-native link react-native-dialogs`
 
 In `android/app/build.gradle`, add a dependency to `':react-native-dialogs'` and URL of the Jitpack maven repository (to download the library https://github.com/afollestad/material-dialogs) :
 ```
@@ -22,7 +28,7 @@ repositories {
 
 ```
 
-###Manual installation
+### Manual installation
 
 Install the npm package [`react-native-dialogs`](https://www.npmjs.com/package/react-native-dialogs). Inside your React Native project, run ([example](https://github.com/aakashns/react-native-dialogs-example/commit/e6b83bf3d2238cf7e4ec3688519f38b2544ccad5)):
 ```bash
@@ -45,46 +51,48 @@ include ':react-native-dialogs'
 project(':react-native-dialogs').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-dialogs/android')
 ```
 
-Next, you need to change the `MainActivity` of your app to register `ReactNativeDialogsPackage` :
+Next, you need to change the `MainApplication` of your app to register `ReactNativeDialogsPackage` :
 ```java
-import com.aakashns.reactnativedialogs.ReactNativeDialogsPackage;
+// ... Other imports
+import com.aakashns.reactnativedialogs.ReactNativeDialogsPackage; // <-- Add this import.
 
     //...
-public class MainActivity extends ReactActivity {
+public class MainApplication extends ReactActivity {
           //...
 
           @Override
           protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
-                new ReactNativeDialogsPackage() // add this manager
+                new ReactNativeDialogsPackage() // <-- Add this package.
             );
           }
 }
 
 ```
-See [this changelog](https://github.com/aakashns/react-native-dialogs-example/commit/52cac27756963bcd2f4fdcd039e1a78028bb0abd) for reference.
+See [this changelog](https://github.com/aakashns/react-native-dialogs-example/commit/52cac27756963bcd2f4fdcd039e1a78028bb0abd) for reference(Earlier versions of React native used MainActivity instead of MainApplication).
 
 Now you're finally ready to start using module in your React Native application. See [this changelog](https://github.com/aakashns/react-native-dialogs-example/commit/2d8e02c22275479d2fbbb89f99dcb846834bec9d) for an example that uses `DialogAndroid`.
 
 Usage
 -----
 ```javascript
-var DialogAndroid = require('react-native-dialogs');
+import DialogAndroid from 'react-native-dialogs';
 
-var options = {
+let options = {
   title: 'Hello, World!',
   content: 'I\'m just simple Dialog',
   positiveText: 'OK',
   negativeText: 'Cancel'
 };
 
-var showDialog = function () {
+let showDialog = function () {
   var dialog = new DialogAndroid();
   dialog.set(options);
   dialog.show();
 }
 ```
+
 Creation of a dialog works in 3 steps :
 1. Create a new dialog using `new DialogAndroid()`.
 2. Set some options using `dialog.set(options)`. `set` can be called multiple times, and options from multiple calls will be merged.
